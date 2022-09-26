@@ -1,0 +1,19 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker Image
+      run: |
+        echo "${{ secrets.DHUB_TOKEN }}" | docker login -u "${{ secrets.DHUB_USERNAME }}" --password-stdin docker.io
+        docker build . --file Dockerfile --tag docker.io/${{ secrets.DHUB_USERNAME }}/${{ secrets.DHUB_REPO }}:$latest
+        docker push docker.io/${{ secrets.DHUB_USERNAME }}/${{ secrets.DHUB_REPO }}:$latest
